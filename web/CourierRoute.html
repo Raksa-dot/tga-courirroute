@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CourierRoute — Optimasi Rute Kurir (Teori Graf &amp; Automata)</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">⌁</div>
+      <div>
+        <h1>CourierRoute</h1>
+        <small>Graph-based Package Delivery Route Optimizer</small>
+      </div>
+    </div>
+    <div class="tag">TEORI GRAF · DIJKSTRA &amp; FSM AUTOMATA</div>
+  </header>
+
+  <main>
+    <div class="intro">
+      <div>
+        <h2>Optimasi Rute Pengiriman Paket</h2>
+        <p>Temukan jalur dengan total jarak minimum di jaringan jalan berbobot menggunakan Algoritma Dijkstra.</p>
+      </div>
+      <span class="badge">● Demo Interaktif</span>
+    </div>
+
+    <div class="layout">
+      <!-- Panel Kontrol Rute -->
+      <section class="panel side">
+        <h3>Rencanakan Rute</h3>
+        <div class="sub">Pilih titik awal keberangkatan dan tujuan pengiriman paket.</div>
+
+        <div class="formrow">
+          <div>
+            <label for="start">Lokasi Awal</label>
+            <select id="start"></select>
+          </div>
+          <div>
+            <label for="end">Tujuan</label>
+            <select id="end"></select>
+          </div>
+        </div>
+
+        <button class="btn primary" id="find">⌕ &nbsp;Cari Rute Terpendek (Dijkstra)</button>
+        <div class="btnrow">
+          <button class="btn secondary" id="reset">Reset Data</button>
+          <button class="btn secondary" id="random">Bobot Acak</button>
+        </div>
+
+        <div class="result" id="result">
+          <div class="result-top">
+            <span class="result-label">Jarak Minimum</span>
+            <span class="pill">Dijkstra</span>
+          </div>
+          <div class="distance">— km</div>
+          <div class="route">Pilih titik dan tekan “Cari Rute”.</div>
+          <div class="note">Perhitungan memakai bobot jarak pada graf berbobot.</div>
+        </div>
+
+        <h3 class="section-gap">Tambah / Ubah Jalan</h3>
+        <div class="sub">Masukkan koneksi jalan baru atau perbarui jaraknya.</div>
+        <div class="edge-form">
+          <div>
+            <label for="from">Dari</label>
+            <select id="from"></select>
+          </div>
+          <div>
+            <label for="to">Ke</label>
+            <select id="to"></select>
+          </div>
+          <div>
+            <label for="weight">Km</label>
+            <input id="weight" type="number" min="0" step="0.1" placeholder="3.5">
+          </div>
+          <button class="btn secondary" id="add">＋ Simpan Koneksi Jalan</button>
+        </div>
+      </section>
+
+      <!-- Panel Visualisasi Graf SVG -->
+      <section class="panel graph-panel">
+        <div class="graph-head">
+          <h3>Visualisasi Graf Jaringan G = (V, E, w)</h3>
+          <div class="legend">
+            <span><i class="dot"></i>Ruas Jalan</span>
+            <span><i class="dot path"></i>Jalur Optimal</span>
+          </div>
+        </div>
+
+        <div class="graph-wrap">
+          <svg id="graph" viewBox="0 0 760 470" role="img" aria-label="Visualisasi graf jaringan jalan"></svg>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <small>Jumlah Lokasi (|V|)</small>
+            <strong id="nodeCount">7</strong>
+          </div>
+          <div class="stat">
+            <small>Jumlah Jalan (|E|)</small>
+            <strong id="edgeCount">9</strong>
+          </div>
+          <div class="stat">
+            <small>Algoritma</small>
+            <strong>Dijkstra</strong>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Panel Bawah: Tabel Sisi, Penjelasan & Simulasi FSM -->
+    <div class="bottom">
+      <section class="panel">
+        <h3>Daftar Koneksi Jalan (Edges)</h3>
+        <div class="sub">Graf tak berarah · bobot dalam satuan kilometer (km)</div>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Ruas Jalan</th>
+                <th>Bobot Jarak</th>
+                <th>Status Evaluasi</th>
+              </tr>
+            </thead>
+            <tbody id="edgeTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h3>Simulasi FSM Status Pengiriman &amp; Kompleksitas</h3>
+        <div class="sub">Deterministic Finite Automaton M = (Q, Σ, δ, q₀, F)</div>
+
+        <div class="fsm-box">
+          <div class="fsm-header">
+            <span>State Saat Ini:</span>
+            <strong id="fsmStateBadge" class="fsm-badge">IDLE</strong>
+          </div>
+          <div class="fsm-actions">
+            <button class="btn secondary fsm-btn" data-event="terima_pesanan">1. Terima Pesanan</button>
+            <button class="btn secondary fsm-btn" data-event="mulai_jalan">2. Mulai Perjalanan</button>
+            <button class="btn secondary fsm-btn" data-event="paket_diterima">3a. Paket Diterima</button>
+            <button class="btn secondary fsm-btn" data-event="gagal_kirim">3b. Gagal Kirim</button>
+            <button class="btn secondary fsm-btn" data-event="jadwalkan_ulang">4. Jadwalkan Ulang</button>
+            <button class="btn secondary fsm-btn" id="fsmResetBtn">↺ Reset FSM</button>
+          </div>
+          <div id="fsmLog" class="fsm-log">Siap menerima transisi status pengiriman paket.</div>
+        </div>
+
+        <h3 class="section-gap">Ringkasan Kompleksitas Algoritma</h3>
+        <ol class="info-list">
+          <li>Jaringan jalan direpresentasikan sebagai graf berbobot <b>G = (V, E, w)</b>.</li>
+          <li>Relaksasi Dijkstra: <code>d[v] = min(d[v], d[u] + w(u, v))</code>.</li>
+          <li><b>Time Complexity:</b> <code>O((V + E) log V)</code> dengan <i>Min-Heap Priority Queue</i>, atau <code>O(V²)</code> dengan <i>Array Linear Scan</i>.</li>
+          <li><b>Space Complexity:</b> <code>O(V + E)</code> menggunakan struktur <i>Adjacency List</i>.</li>
+        </ol>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    CourierRoute · Proyek Mata Kuliah Teori Graph dan Automata · Kode Telah Direfaktor Secara Modular
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
