@@ -2,6 +2,11 @@
 ## Sistem Pencarian Jalur Teroptimal dalam Jaringan Pengiriman Paket Menggunakan Graf Berbobot
 ### *(Studi Kasus: Optimasi Rute Kurir — CourierRoute)*
 
+**Disusun Oleh Kelompok:**
+1. **Rangga Akhdan A.S.P** — `2411102441111`
+2. **M. Nabil Syafiq** — `2411102441110`
+3. **Fatwa Ikhwan Maulaya** — `2411102441063`
+
 ---
 
 **Arsitektur Direktori & Komponen Deliverables Proyek:**

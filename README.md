@@ -1,5 +1,10 @@
 # 📦 CourierRoute — Sistem Pencarian Jalur Teroptimal dalam Jaringan Pengiriman Paket Menggunakan Graf Berbobot
 
+**Anggota Kelompok:**
+1. **Rangga Akhdan A.S.P** — `2411102441111`
+2. **M. Nabil Syafiq** — `2411102441110`
+3. **Fatwa Ikhwan Maulaya** — `2411102441063`
+
 Proyek Mata Kuliah **Teori Graph dan Automata** yang mengimplementasikan pemodelan **Graf Berbobot Tak Berarah $G = (V, E, w)$**, pencarian jalur terpendek menggunakan **Algoritma Dijkstra** (*Min-Heap Priority Queue* $O((V + E) \log V)$ dan *Array Linear Scan* $O(V^2)$), serta **Deterministic Finite Automaton (FSM)** 5-tupel $M = (Q, \Sigma, \delta, q_0, F)$ untuk validasi alur status pengiriman paket.
 
 ---
